@@ -1,0 +1,8 @@
+{
+  "name": "fix SDN JAMBU Absensi",
+  "description": "Aplikasi absensi mobile-first untuk guru dan kepala sekolah SDN JAMBU dengan fitur pencatatan kehadiran, izin, dan laporan kinerja.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}
