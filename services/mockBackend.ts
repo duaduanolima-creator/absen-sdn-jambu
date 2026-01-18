@@ -392,10 +392,21 @@ export const saveAttendance = (record: AttendanceRecord): void => {
 };
 
 export const markCheckIn = async (user: User, location: string, photo: string, distance: string): Promise<AttendanceRecord> => {
-  // FINAL CHECK: Device Lock
+  // 1. FINAL CHECK: Device Lock
   const deviceCheck = validateDeviceUsage(user.id);
   if (!deviceCheck.allowed) {
       throw new Error(deviceCheck.message);
+  }
+
+  // 2. CHECK: Prevent Duplicate Check-In (Absen 1 Kali Sehari)
+  const existingRecord = getTodayRecord(user.id);
+  if (existingRecord) {
+     if (existingRecord.type === 'present' && existingRecord.checkInTime) {
+        throw new Error("Anda sudah melakukan absen datang hari ini. Absen hanya dapat dilakukan 1 kali sehari.");
+     }
+     if (['sick', 'leave', 'sppd'].includes(existingRecord.type)) {
+        throw new Error("Anda sudah tercatat Izin/Sakit/SPPD hari ini.");
+     }
   }
 
   await new Promise(resolve => setTimeout(resolve, 800));

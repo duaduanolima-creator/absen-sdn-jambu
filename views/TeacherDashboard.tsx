@@ -10,8 +10,8 @@ const SCHOOL_COORDINATES = {
   lat: -6.114196248039071,
   lng: 106.2276108127061
 };
-// VALIDASI KETAT: Jarak maksimal 100 meter
-const MAX_RADIUS_METERS = 100; 
+// VALIDASI MASA PERCOBAAN: Jarak maksimal diperluas menjadi 2000 meter (2 km)
+const MAX_RADIUS_METERS = 2000; 
 
 interface TeacherDashboardProps {
   user: User;
@@ -444,74 +444,81 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ user, onLogo
           </div>
         </div>
 
-        {/* Action Grid - SQUARE BOX VERSION */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Action Grid - RECTANGULAR CARD VERSION (Option 1) */}
+        <div className="grid grid-cols-2 gap-3">
           {/* 1. Absen Datang */}
           <button 
-            disabled={loading}
+            disabled={loading || isCheckedIn} 
             onClick={handleCheckInClick}
-            className={`aspect-square relative group overflow-hidden rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300 shadow-lg border border-white/10 p-4 ${
+            className={`relative group overflow-hidden rounded-2xl p-3 h-20 flex items-center gap-3 transition-all shadow-lg border border-white/10 ${
                 isCheckedIn 
-                ? 'bg-gradient-to-br from-emerald-600 to-teal-800 shadow-emerald-500/20' 
-                : 'bg-gradient-to-br from-emerald-500 to-green-700 shadow-emerald-500/30'
-            } active:scale-95 hover:scale-[1.02]`}
+                ? 'bg-slate-800 border-slate-700 text-emerald-500 cursor-not-allowed opacity-100' 
+                : 'bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-emerald-500/20 active:scale-95'
+            }`}
           >
-             <div className="absolute top-2 right-2 p-2 opacity-10">
-                <MapPin size={50} />
+             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isCheckedIn ? 'bg-emerald-500/10' : 'bg-white/20 backdrop-blur-sm'}`}>
+                {isCheckedIn ? <CheckCircle2 size={20} /> : <MapPin size={20} className="text-white" />}
              </div>
-             <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm z-10 shadow-inner">
-                <MapPin size={28} className="text-white" />
+             <div className="flex flex-col items-start z-10">
+                <span className={`font-bold text-sm leading-none ${isCheckedIn ? 'text-emerald-500' : 'text-white'}`}>
+                    {isCheckedIn ? 'Sudah Absen' : 'Absen Datang'}
+                </span>
+                <span className={`text-[10px] font-medium mt-1 ${isCheckedIn ? 'text-slate-500' : 'text-emerald-100'}`}>
+                    {isCheckedIn ? 'Tercatat' : 'Tap disini'}
+                </span>
              </div>
-             <span className="font-bold text-xs text-center leading-tight z-10">
-                {isCheckedIn ? 'Update\nAbsen' : 'Absen\nDatang'}
-             </span>
+             {/* Decorative bg icon */}
+             <MapPin className="absolute -right-2 -bottom-2 text-white/5 rotate-12" size={60} />
           </button>
 
           {/* 2. Absen Pulang */}
           <button 
             disabled={!isCheckedIn || isCheckedOut || loading}
             onClick={() => setModalType('checkout')}
-            className={`aspect-square relative group overflow-hidden rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300 shadow-lg border border-white/10 p-4 ${
+            className={`relative group overflow-hidden rounded-2xl p-3 h-20 flex items-center gap-3 transition-all shadow-lg border border-white/10 ${
               !isCheckedIn || isCheckedOut
               ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed grayscale opacity-70' 
-              : 'bg-gradient-to-br from-blue-500 to-indigo-700 shadow-blue-500/30 hover:scale-[1.02] active:scale-95 text-white'
+              : 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-blue-500/20 active:scale-95 text-white'
             }`}
           >
-             <div className="absolute top-2 right-2 p-2 opacity-10">
-                <LogOut size={50} />
+             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${!isCheckedIn || isCheckedOut ? 'bg-slate-700' : 'bg-white/20 backdrop-blur-sm'}`}>
+                <LogOut size={20} />
              </div>
-             <div className={`p-3 rounded-2xl backdrop-blur-sm z-10 shadow-inner ${!isCheckedIn || isCheckedOut ? 'bg-slate-700' : 'bg-white/10'}`}>
-                <LogOut size={28} />
+             <div className="flex flex-col items-start z-10">
+                <span className="font-bold text-sm leading-none">Absen Pulang</span>
+                <span className="text-[10px] font-medium mt-1 text-blue-100/70">Tap disini</span>
              </div>
-             <span className="font-bold text-xs text-center leading-tight z-10">Absen\nPulang</span>
+             <LogOut className="absolute -right-2 -bottom-2 text-white/5 rotate-12" size={60} />
           </button>
 
           {/* 3. Input SPPD */}
           <button 
             onClick={() => setModalType('sppd')}
-            className="aspect-square relative group overflow-hidden rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300 bg-gradient-to-br from-purple-500 to-indigo-700 text-white shadow-lg shadow-purple-500/30 border border-white/10 p-4 hover:scale-[1.02] active:scale-95"
+            className="relative group overflow-hidden rounded-2xl p-3 h-20 flex items-center gap-3 transition-all bg-gradient-to-br from-purple-500 to-indigo-700 text-white shadow-lg shadow-purple-500/20 border border-white/10 active:scale-95"
           >
-             <div className="absolute top-2 right-2 p-2 opacity-10">
-                <Briefcase size={50} />
+             <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0">
+                <Briefcase size={20} />
              </div>
-             <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm z-10 shadow-inner">
-                <Briefcase size={28} />
+             <div className="flex flex-col items-start z-10">
+                <span className="font-bold text-sm leading-none">Input SPPD</span>
+                <span className="text-[10px] font-medium mt-1 text-purple-100/70">Dinas Luar</span>
              </div>
-             <span className="font-bold text-xs text-center leading-tight z-10">Input\nSPPD</span>
+             <Briefcase className="absolute -right-2 -bottom-2 text-white/5 rotate-12" size={60} />
           </button>
 
           {/* 4. Sakit / Izin */}
           <button 
              onClick={() => setModalType('sick')}
-             className="aspect-square relative group overflow-hidden rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300 bg-gradient-to-br from-orange-500 to-red-700 text-white shadow-lg shadow-orange-500/30 border border-white/10 p-4 hover:scale-[1.02] active:scale-95"
+             className="relative group overflow-hidden rounded-2xl p-3 h-20 flex items-center gap-3 transition-all bg-gradient-to-br from-orange-500 to-red-700 text-white shadow-lg shadow-orange-500/20 border border-white/10 active:scale-95"
           >
-             <div className="absolute top-2 right-2 p-2 opacity-10">
-                <HeartPulse size={50} />
+             <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0">
+                <HeartPulse size={20} />
              </div>
-             <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm z-10 shadow-inner">
-                <HeartPulse size={28} />
+             <div className="flex flex-col items-start z-10">
+                <span className="font-bold text-sm leading-none">Sakit / Izin</span>
+                <span className="text-[10px] font-medium mt-1 text-orange-100/70">Formulir</span>
              </div>
-             <span className="font-bold text-xs text-center leading-tight z-10">Sakit /\nIzin</span>
+             <HeartPulse className="absolute -right-2 -bottom-2 text-white/5 rotate-12" size={60} />
           </button>
         </div>
 
