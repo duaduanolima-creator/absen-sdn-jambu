@@ -7,11 +7,11 @@ import { ProfileView } from './ProfileView';
 
 // --- KONFIGURASI LOKASI SEKOLAH ---
 const SCHOOL_COORDINATES = {
-  lat: -6.114196248039071,
-  lng: 106.2276108127061
+  lat: -6.282759,
+  lng: 106.264251
 };
-// VALIDASI MASA PERCOBAAN: Jarak maksimal diperluas menjadi 2000 meter (2 km)
-const MAX_RADIUS_METERS = 2000; 
+// VALIDASI JARAK: Radius maksimal 50 meter
+const MAX_RADIUS_METERS = 50; 
 
 interface TeacherDashboardProps {
   user: User;
